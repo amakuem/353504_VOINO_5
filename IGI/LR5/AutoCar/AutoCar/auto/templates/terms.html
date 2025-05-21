@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Словарь терминов{% endblock %}
+{% block content %}
+<h1>Словарь терминов</h1>
+<ul>
+{% for term in terms %}
+  <li>
+    <strong>{{ term.question }}</strong> ({{ term.added_at|date:"d.m.Y" }})
+    <p>{{ term.answer }}</p>
+  </li>
+{% empty %}
+  <li>Термины отсутствуют.</li>
+{% endfor %}
+</ul>
+{% endblock %}

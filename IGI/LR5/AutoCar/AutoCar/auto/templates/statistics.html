@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="statistics-container">
+    <h2>Статистика клиентов</h2>
+    
+    <div class="stats-info">
+        <h3>Основные показатели:</h3>
+        <ul>
+            <li>Общее количество клиентов: {{ stats.total_clients }}</li>
+            <li>Средний возраст: {{ stats.avg_age|floatformat:2 }} лет</li>
+            <li>Медианный возраст: {{ stats.median_age|floatformat:2 }} лет</li>
+        </ul>
+    </div>
+
+    <div class="visualization">
+        <h3>Распределение возрастов</h3>
+        <img src="data:image/png;base64,{{ graphic }}" 
+             alt="График распределения возрастов"
+             style="max-width: 800px;">
+    </div>
+    
+    <a href="{% url 'home' %}" class="btn btn-info">Назад в профиль</a>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h2>Топ должник</h2>
+
+{% if client %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ client.user.get_full_name }}</h5>
+        <p class="card-text">
+            Общий долг: <span class="text-danger">{{ client.total_debt|default:"0.00" }} руб.</span><br>
+            Последний платеж: 
+            {% if last_payment %}
+                {{ last_payment.created_at|date:"d.m.Y H:i" }} ({{ last_payment.amount }} руб.)
+            {% else %}
+                Нет платежей
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    Нет данных о должниках
+</div>
+{% endif %}
+
+<a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mt-3">Назад</a>
+{% endblock %}

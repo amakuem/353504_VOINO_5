@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}User authenticate{% endblock %}</title>
+    {% block timezone_script %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        fetch('{% url "set_timezone_auto" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({timezone: tz})
+        }).catch(error => console.log('Timezone detection error:', error));
+    });
+    </script>
+    {% endblock %}
+</head>
+<body>
+    <ul>
+        <li>
+            User: {{ user }}
+            
+        </li>
+        <li>
+            <a href="{% url 'home' %}" class="btn btn-secondary mt-3">На главную</a> |
+            <a href="{% url 'services' %}" class="btn btn-secondary mt-3">Услуги</a> |
+            
+            <a href="{% url 'about' %}" class="btn btn-secondary mt-3">О компании</a> |
+            {% if user.is_authenticated %}
+                <a href="{% url 'news_list' %}" class="btn btn-secondary mt-3">Нововсти</a> |
+                <a href="{% url 'statistics' %}" class="btn btn-info">Показать статистику</a> |
+                <a href="{% url 'terms' %}" class="btn btn-secondary mt-3">Словарь терминов</a> |
+                <a href="{% url 'contacts' %}" class="btn btn-secondary mt-3">Контакты</a> |
+                <a href="{% url 'privacy' %}" class="btn btn-secondary mt-3">Политика конфиденциальности</a> |
+                <a href="{% url 'vacancies' %}" class="btn btn-secondary mt-3">Вакансии</a> |
+            {% endif %}
+            <a href="{% url 'reviews' %}" class="btn btn-secondary mt-3">Отзывы</a> |
+            <a href="{% url 'promo_codes' %}" class="btn btn-secondary mt-3">Промокоды</a> 
+            {% if user.is_authenticated and user.is_superuser %}
+                /
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mt-3">Админ панель</a>
+            {% endif %}
+        </li>
+    </ul>
+    {% block content %}{% endblock %}
+</body>
+</html>

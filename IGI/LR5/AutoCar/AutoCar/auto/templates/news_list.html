@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Новости{% endblock %}
+{% block content %}
+<h1>Новости</h1>
+<ul>
+{% for article in articles %}
+  <li>
+    <h2>{{ article.title }}</h2>
+    <p>{{ article.summary }}</p>
+    {% if article.image %}
+      <img src="{{ article.image.url }}" alt="{{ article.title }}">
+    {% endif %}
+    <p><!-- Читайте далее, когда будет -->Читать далее</p>
+  </li>
+{% empty %}
+  <li>Новостей нет.</li>
+{% endfor %}
+</ul>
+{% endblock %}
