@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+<table width="100%" cellpadding="10" cellspacing="0">
+    <tr>
+        <!-- Левая колонка -->
+        <td width="70%" valign="top">
+            <h1>Home page</h1>
+
+            <div>
+                <h2>Weather in Minsk</h2>
+                {% if weather %}
+                    <div>
+                        <p>Temperature: {{ weather.main.temp }}°C</p>
+                        <p>Weather: {{ weather.weather.0.description }}</p>
+                        <p>Humidity: {{ weather.main.humidity }}%</p>
+                    </div>
+                {% else %}
+                    <p>Weather data not available</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <h2>Random Joke</h2>
+                {% if joke %}
+                    <div>
+                        <p><b>{{ joke.setup }}</b></p>
+                        <p><i>{{ joke.punchline }}</i></p>
+                    </div>
+                {% else %}
+                    <p>Joke not available</p>
+                {% endif %}
+            </div>
+
+            <div>
+                {% if user.is_authenticated %}
+                    <p>
+                        <a href="{% url 'profile' %}">Profile</a> | 
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </p>
+                {% else %}
+                    <p><a href="{% url 'login' %}">Login</a>|<a href="{% url 'register' %}">Registration</a></p>|
+                {% endif %}
+            </div>
+        </td>
+
+            <!-- <div class="admin-links">
+                <a href="{% url 'statistics' %}" class="btn btn-info">Показать статистику</a>
+            </div> -->
+
+        <!-- Правая колонка -->
+        <td width="30%" valign="top" bgcolor="#f0f0f0">
+            <h2>Time Information</h2>
+            <div>
+                <p><b>Timezone:</b><br>{{ timezone }}</p>
+                <p><b>Local Date:</b><br>{{ local_date }}</p>
+                <p><b>UTC Date:</b><br>{{ utc_date }}</p>
+            </div>
+
+            <h3>Calendar</h3>
+            <pre>{{ text_calendar }}</pre>
+
+            <p>
+                <a href="{% url 'set_timezone' %}">
+                    <button>Change Timezone</button>
+                </a>
+            </p>
+        </td>
+    </tr>
+</table>
+{% endblock %}

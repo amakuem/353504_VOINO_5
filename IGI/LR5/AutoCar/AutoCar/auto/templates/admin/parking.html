@@ -1,0 +1,54 @@
+<!-- templates/admin/parking.html -->
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h2>Управление парковочными местами</h2>
+<div class="alert alert-info">
+    Всего мест: {{ places.count }} | Занято: {{ total_occupied }}
+</div>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>Номер</th>
+            <th>Цена</th>
+            <th>Статус</th>
+            <th>Автомобиль</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for place in places %}
+        <tr>
+            <td>{{ place.number }}</td>
+            <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="place_id" value="{{ place.id }}">
+                    <div class="input-group">
+                        <input type="number" name="price" value="{{ place.price }}" 
+                               class="form-control form-control-sm" step="0.01">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-sm btn-primary">✓</button>
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td>
+                {% if place.is_occupied %}
+                <span class="badge badge-danger">Занято</span>
+                {% else %}
+                <span class="badge badge-success">Свободно</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if place.car %}
+        {{ place.car.license_plate }} ({{ place.car.model }})
+        <small class="text-muted">Владелец: {{ place.car.owner }}</small>
+                {% endif %}
+            </td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

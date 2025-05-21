@@ -1,0 +1,37 @@
+<!-- templates/admin/min_debt.html -->
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h2>Автомобиль с минимальным долгом</h2>
+
+<form method="get" class="mb-4">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="col">
+            {{ form.start_date }}
+        </div>
+        <div class="col">
+            {{ form.end_date }}
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </div>
+    </div>
+</form>
+
+{% if car %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ car.license_plate }}</h5>
+        <p class="card-text">
+            Модель: {{ car.model }}<br>
+            Владелец: {{ car.owner.user.get_full_name }}<br>
+            Долг: {{ car.total_debt|default:"0.00" }} руб.
+        </p>
+    </div>
+</div>
+{% elif form.is_valid %}
+<div class="alert alert-info">
+    Нет данных за выбранный период
+</div>
+{% endif %}
+{% endblock %}

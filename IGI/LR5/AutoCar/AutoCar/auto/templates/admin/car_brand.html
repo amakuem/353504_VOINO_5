@@ -1,0 +1,47 @@
+<!-- templates/admin/car_brand.html -->
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h2>Поиск по марке автомобиля</h2>
+
+<form method="get" class="mb-4">
+    <div class="input-group">
+        {{ form.brand }}
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">Найти</button>
+        </div>
+    </div>
+</form>
+
+{% if cars %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Номер</th>
+            <th>Модель</th>
+            <th>Владелец</th>
+            <th>Парковочное место</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for car in cars %}
+        <tr>
+            <td>{{ car.license_plate }}</td>
+            <td>{{ car.model }}</td>
+            <td>{{ car.owner.user.get_full_name }}</td>
+            <td>
+                {% if car.parking_place %}
+                №{{ car.parking_place.number }}
+                {% else %}
+                —
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif form.is_valid %}
+<div class="alert alert-info">
+    Автомобили марки "{{ form.cleaned_data.brand }}" не найдены
+</div>
+{% endif %}
+{% endblock %}

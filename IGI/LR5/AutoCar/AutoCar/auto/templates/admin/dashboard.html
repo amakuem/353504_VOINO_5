@@ -1,0 +1,18 @@
+<!-- Шаблон admin/dashboard.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-panel">
+    <h1>Административная панель</h1>
+    <div class="row">
+        {% for item in menu %}
+        <div class="col-md-4 mb-4">
+            <a href="{% url item.url %}" class="card btn">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Контакты{% endblock %}
+{% block content %}
+<h1>Контакты</h1>
+<ul>
+{% for emp in employees %}
+  <li>
+    <h3>{{ emp.name }} — {{ emp.position }}</h3>
+    {% if emp.photo %}<img src="{{ emp.photo.url }}" alt="{{ emp.name }}">{% endif %}
+    <p>Телефон: {{ emp.phone }}</p>
+    <p>Email: {{ emp.email }}</p>
+  </li>
+{% empty %}
+  <li>Сотрудники не добавлены.</li>
+{% endfor %}
+</ul>
+{% endblock %}
