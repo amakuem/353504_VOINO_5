@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>Профиль пользователя: {{ client }}</h2>
+    
+    <!-- Личная информация -->
+    <div class="section">
+        <h3>Контактные данные:</h3>
+        <p><strong>Телефон:</strong> {{ client.phone_number }}</p>
+        <p><strong>Дата рождения:</strong> {{ client.birth_date|date:"d.m.Y" }}</p>
+        <p><strong>Email:</strong> {{ client.user.email }}</p>
+    </div>
+
+    <!-- Привязанные автомобили -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Ваши автомобили:</h3>
+            <a href="{% url 'car_create' %}" class="btn btn-add">
+                <i class="fas fa-plus"></i> Добавить автомобиль
+            </a>
+        </div>
+        
+        {% if client.cars.all %}
+            <div class="car-list">
+                {% for car in client.cars.all %}
+                    <div class="car-item">
+                        <div class="car-info">
+                            <p>🚗 {{ car.model }} ({{ car.license_plate }})</p>
+                            {% if car.parking_place %}
+                                <p class="parking-info">
+                                    Парковочное место №{{ car.parking_place.number }}
+                                </p>
+                            {% endif %}
+                            <p class="meta-info">
+                                Создано: {{ car.created_at|date:"d/m/Y H:i" }}<br>
+                                Обновлено: {{ car.updated_at|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                        <div class="car-actions">
+                            <a href="{% url 'car_update' car.pk %}" class="btn btn-edit">
+                                <i class="fas fa-edit"></i> Изменить
+                            </a>
+                            <form action="{% url 'car_delete' car.pk %}" method="post" class="delete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-delete">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-items">Нет привязанных автомобилей</p>
+        {% endif %}
+    </div>
+
+    <!-- Счета -->
+    <div class="section">
+        <h3>История счетов:</h3>
+        {% if invoices %}
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Автомобиль</th>
+                        <th>Тип</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                        <tr class="{% if invoice.is_payment %}paid{% else %}pending{% endif %}">
+                            <td>{{ invoice.period|date:"m.Y" }}</td>
+                            <td>{{ invoice.car.license_plate }}</td>
+                            <td>{% if invoice.is_payment %}Оплата{% else %}Начисление{% endif %}</td>
+                            <td>{{ invoice.amount }} руб.</td>
+                            <td>
+                                {% if invoice.is_payment %}
+                                    <span class="status-paid">✅ Оплачен</span>
+                                {% else %}
+                                    <span class="status-pending">⏳ Ожидает оплаты</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ invoice.created_at|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-items">Нет активных счетов</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Отзывы{% endblock %}
+{% block content %}
+<h1>Отзывы</h1>
+<ul>
+{% for rev in reviews %}
+  <li>
+    <strong>{{ rev.name }} ({{ rev.rating }}/5)</strong> — {{ rev.created_at|date:"d.m.Y" }}
+    <p>{{ rev.text }}</p>
+  </li>
+{% empty %}
+  <li>Отзывов нет.</li>
+{% endfor %}
+</ul>
+
+<h2>Добавить отзыв</h2>
+{% if user.is_authenticated %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить</button>
+  </form>
+{% else %}
+  <p>Чтобы оставить отзыв, <a href="{% url 'login' %}?next={% url 'reviews' %}">войдите</a> или зарегистрируйтесь.</p>
+{% endif %}
+{% endblock %}

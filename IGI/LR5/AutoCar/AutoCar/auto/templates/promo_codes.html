@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Промокоды и купоны{% endblock %}
+{% block content %}
+<h1>Промокоды</h1>
+<h2>Действующие</h2>
+<ul>
+{% for code in codes %}
+  {% if code.active %}
+    <li>{{ code.code }} — {{ code.description }} {% if code.expires_at %}(до {{ code.expires_at|date:"d.m.Y" }}){% endif %}</li>
+  {% endif %}
+{% empty %}
+  <li>Нет активных промокодов.</li>
+{% endfor %}
+</ul>
+<h2>Архив</h2>
+<ul>
+{% for code in codes %}
+  {% if not code.active %}
+    <li>{{ code.code }} — {{ code.description }} {% if code.expires_at %}(эксп. {{ code.expires_at|date:"d.m.Y" }}){% endif %}</li>
+  {% endif %}
+{% endfor %}
+</ul>
+{% endblock %}

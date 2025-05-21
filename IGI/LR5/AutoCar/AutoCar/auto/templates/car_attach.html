@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Привязка существующего автомобиля</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Привязать</button>
+    <a href="{% url 'car_create' %}" class="btn btn-secondary">Зарегистрировать новый автомобиль</a>
+</form>
+{% endblock %}
