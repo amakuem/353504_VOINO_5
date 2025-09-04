@@ -3,6 +3,7 @@ from .models import Car, Review
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import NumberInput
+from django.core.exceptions import ValidationError
 
 from .models import phone_regex
 
@@ -19,6 +20,14 @@ class ClientRegistrationForm(UserCreationForm):
         widget=forms.DateInput(attrs={'type': 'date'}),
         help_text="Укажите дату рождения"
     )
+    def clean_birth_date(self):
+        birth_date = self.cleaned_data['birth_date']
+        today = birth_date.today()
+        age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+        
+        if age < 18:
+            raise ValidationError("Вы должны быть старше 18 лет для регистрации")
+        return birth_date
 
     class Meta:
         model = User
@@ -50,6 +59,31 @@ class CarCreateForm(forms.ModelForm):
         if parking_place.is_occupied:
             raise forms.ValidationError("Это парковочное место уже занято")
         return parking_place
+    
+class CarUpdateForm(forms.ModelForm):
+    class Meta: 
+        model = Car
+        fields = ['license_plate', 'model', 'parking_place']
+        labels = {
+            'parking_place': 'Парковочное место*'
+        }
+
+    def clean_parking_place(self):
+        parking_place = self.cleaned_data.get('parking_place')
+        
+        # Получаем текущее парковочное место из объекта автомобиля
+        if self.instance and self.instance.pk:
+            current_parking_place = self.instance.parking_place
+            # Если место не изменилось, пропускаем проверку
+            if current_parking_place == parking_place:
+                return parking_place
+        
+        # Если место изменилось или это новый автомобиль, проверяем занятость
+        if parking_place.is_occupied:
+            raise forms.ValidationError("Это парковочное место уже занято")
+        
+        return parking_place
+
 
 class CarAttachForm(forms.Form):
     license_plate = forms.CharField(label='Номер автомобиля')

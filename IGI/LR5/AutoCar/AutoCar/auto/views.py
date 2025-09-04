@@ -4,8 +4,8 @@ from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
-from .forms import ClientRegistrationForm, CarCreateForm, CarAttachForm, ReviewForm, PeriodForm, CarBrandForm, ParkingFilterForm
-from .models import  Client, Invoice, Car, ParkingPlace, Article, CompanyInfo, Term, Employee, Vacancy, Review, PromoCode, models
+from .forms import ClientRegistrationForm, CarCreateForm, CarUpdateForm, CarAttachForm, ReviewForm, PeriodForm, CarBrandForm, ParkingFilterForm
+from .models import  Client, Invoice, Car, ParkingPlace, Article, CompanyInfo, Term, Employee, Vacancy, Review, PromoCode, models, User
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.urls import reverse_lazy
@@ -23,13 +23,11 @@ import numpy as np
 import matplotlib
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count, Q
-matplotlib.use('Agg')  # Важно для работы в Django
+matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import json
-# Create your views here.
-
 
 @require_http_methods(["POST"])
 def set_timezone_auto(request):
@@ -91,25 +89,26 @@ def index(request):
     now_utc = timezone.now()
     now_local = now_utc.astimezone(client_tz)
 
-    try:
-        weather_response = requests.get(
-            f'https://api.openweathermap.org/data/2.5/weather?q=Minsk&units=metric&appid={settings.OPENWEATHER_API_KEY}',
-            timeout=5
-        )
-        if weather_response.status_code == 200:
-            weather_data = weather_response.json()
-    except requests.exceptions.RequestException:
-        pass
+    if request.user.is_authenticated:
+        try:
+            weather_response = requests.get(
+                f'https://api.openweathermap.org/data/2.5/weather?q=Minsk&units=metric&appid={settings.OPENWEATHER_API_KEY}',
+                timeout=5
+            )
+            if weather_response.status_code == 200:
+                weather_data = weather_response.json()
+        except requests.exceptions.RequestException:
+            pass
 
-    try:
-        joke_response = requests.get(
-            'https://official-joke-api.appspot.com/random_joke',
-            timeout=5
-        )
-        if joke_response.status_code == 200:
-            joke_data = joke_response.json()
-    except requests.exceptions.RequestException:
-        pass
+        try:
+            joke_response = requests.get(
+                'https://official-joke-api.appspot.com/random_joke',
+                timeout=5
+            )
+            if joke_response.status_code == 200:
+                joke_data = joke_response.json()
+        except requests.exceptions.RequestException:
+            pass
 
     # Формируем контекст
     context = {
@@ -229,7 +228,7 @@ class OwnerRequiredMixin(LoginRequiredMixin):
 
 class CarUpdateView(OwnerRequiredMixin, UpdateView):
     model = Car
-    form_class = CarCreateForm
+    form_class = CarUpdateForm #CarCreateForm
     template_name = 'car_form.html'
     success_url = reverse_lazy('profile')
 

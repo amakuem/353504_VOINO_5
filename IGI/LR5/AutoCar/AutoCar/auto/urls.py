@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from  django.views.generic import  TemplateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
@@ -10,7 +10,7 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('register/', views.register, name='register'),
     path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    re_path(r'^profile/', ProfileView.as_view(), name='profile'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('cars/new/', CarCreateView.as_view(), name='car_create'),
     path('cars/attach/', CarAttachView.as_view(), name='car_attach'),
@@ -27,7 +27,6 @@ urlpatterns = [
     path('vacancies/', views.vacancies, name='vacancies'),
     path('reviews/', views.reviews, name='reviews'),
     path('promo/', views.promo_codes, name='promo_codes'),
-
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('admin-dashboard/clients/', views.client_list, name='client_list'),
     path('admin-dashboard/parking/', views.parking_list, name='parking_list'),

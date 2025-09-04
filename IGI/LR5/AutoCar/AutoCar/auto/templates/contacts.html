@@ -6,7 +6,7 @@
 {% for emp in employees %}
   <li>
     <h3>{{ emp.name }} — {{ emp.position }}</h3>
-    {% if emp.photo %}<img src="{{ emp.photo.url }}" alt="{{ emp.name }}">{% endif %}
+    {% if emp.photo %}<img src="{{ emp.photo.url }}" width="200" alt="{{ emp.name }}" width="200">{% endif %}
     <p>Телефон: {{ emp.phone }}</p>
     <p>Email: {{ emp.email }}</p>
   </li>

@@ -7,7 +7,7 @@ class TimezoneMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        tz_name = request.session.get('timezone', 'Europe/Minsk')
+        tz_name = request.session.get('timezone')
         try:
             timezone.activate(pytz.timezone(tz_name))
         except pytz.UnknownTimeZoneError:
