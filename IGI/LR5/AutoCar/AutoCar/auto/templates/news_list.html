@@ -8,9 +8,9 @@
     <h2>{{ article.title }}</h2>
     <p>{{ article.summary }}</p>
     {% if article.image %}
-      <img src="{{ article.image.url }}" alt="{{ article.title }}">
+      <img src="{{ article.image.url }}" width="200" alt="{{ article.title }}">
     {% endif %}
-    <p><!-- Читайте далее, когда будет -->Читать далее</p>
+    <!--<p> Читайте далее, когда будет Читать далее</p>-->
   </li>
 {% empty %}
   <li>Новостей нет.</li>
